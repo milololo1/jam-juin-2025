@@ -15,7 +15,7 @@ public class UIMap : MonoBehaviour
     {
         // for now
         level.initialize();
-        level.generate();
+        level.generate(3);
 
         GetComponent<RectTransform>().sizeDelta = new Vector2(level.length*size_room, level.width*size_room);
 

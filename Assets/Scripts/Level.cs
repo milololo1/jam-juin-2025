@@ -155,7 +155,7 @@ public class Level : MonoBehaviour
             if (x + dx > -1 && x + dx < width)
             {
                 RoomType next_type = rooms[x + dx, y];
-                if (next_type != RoomType.none && next_type != RoomType.boss)
+                if (next_type != RoomType.none && next_type != RoomType.boss && next_type != RoomType.upgrade)
                 {
                     if (Random.value < p_connect) add_door(x, y, x + dx, y);
                 }
@@ -166,7 +166,7 @@ public class Level : MonoBehaviour
             if (y + dy > -1 && y + dy < length)
             {
                 RoomType next_type = rooms[x, y + dy];
-                if (next_type != RoomType.none && next_type != RoomType.boss)
+                if (next_type != RoomType.none && next_type != RoomType.boss && next_type != RoomType.upgrade)
                 {
                     if (Random.value < p_connect) add_door(x, y, x, y + dy);
                 }
@@ -192,6 +192,8 @@ public class Level : MonoBehaviour
 
         Vector2Int current = origin;
 
+        int x_move_counter = 0; //Limit vertical movement
+
         // add start
         add_room(origin.x, origin.y, RoomType.start);
 
@@ -208,14 +210,16 @@ public class Level : MonoBehaviour
             }
             else
             {
-                for (int dx = -1; dx < 2; dx += 2)
+                if(x_move_counter < 3)
                 {
-                    if (current.x + dx > -1 && current.x + dx < width)
+                    for (int dx = -1; dx < 2; dx += 2)
                     {
-                        if (rooms[current.x + dx, current.y] == RoomType.none) possible_nodes.Add(new Vector2Int(current.x + dx, current.y));
+                        if (current.x + dx > -1 && current.x + dx < width)
+                        {
+                            if (rooms[current.x + dx, current.y] == RoomType.none) possible_nodes.Add(new Vector2Int(current.x + dx, current.y));
+                        }
                     }
                 }
-
                 possible_nodes.Add(new Vector2Int(current.x, current.y + 1));
             }
 
@@ -226,6 +230,7 @@ public class Level : MonoBehaviour
             {
                 add_room(current.x, current.y, next.x, next.y);
                 created_rooms.Add(next);
+                x_move_counter = next.y > current.y ? 0 : x_move_counter+1;
             }
             else add_room(current.x, current.y, next.x, next.y, RoomType.boss, 0);
             current = next;
@@ -233,9 +238,10 @@ public class Level : MonoBehaviour
         return created_rooms;
     }
 
-    private void generate_side_path(Vector2Int start, int max_length = 5, float p_connect = 0.05f)
+    private bool generate_side_path(Vector2Int start, int max_length = 5, float p_connect = 0.05f, bool create_upgrade_room = false)
     {
         Vector2Int current = start;
+        bool has_generated_path = false;
 
         while (max_length > 0)
         {
@@ -264,12 +270,86 @@ public class Level : MonoBehaviour
                 add_room(current.x, current.y, next.x, next.y, RoomType.simple, p_connect);
                 current = next;
                 max_length -= 1;
+                has_generated_path = true;
             }
-            else break;
+            else
+            {
+                break;
+            }
+        }
+
+        if (has_generated_path && create_upgrade_room) //The last room will be an upgrade room
+        {
+            rooms[current.x, current.y] = RoomType.upgrade;
+            var config_current = get_configuration(current.x, current.y);
+            var random_index = Random.Range(0, 4);
+
+            for (int i = 0; i < 4; ++i)
+            {
+                random_index = random_index % 4;
+                if(random_index == 0 && config_current.north)
+                {
+                    close_all_doors(current.x, current.y);
+                    add_door(current.x, current.y, Direction.north);
+                    break;
+                }
+                if(random_index == 1 && config_current.west)
+                {
+                    close_all_doors(current.x, current.y);
+                    add_door(current.x, current.y, Direction.west);
+                    break;
+                }
+                if(random_index == 2 && config_current.east)
+                {
+                    close_all_doors(current.x, current.y);
+                    add_door(current.x, current.y, Direction.east);
+                    break;
+                }
+                if(random_index == 3 && config_current.south)
+                {
+                    close_all_doors(current.x, current.y);
+                    add_door(current.x, current.y, Direction.south);
+                    break;
+                }
+                random_index++;
+            }
+        }
+
+
+        return has_generated_path;
+    }
+    private void generate_upgrade_room(int total_upgrade_room, List<Vector2Int> main_nodes)
+    {
+        List<Vector2Int> side_path_generation_order = new List<Vector2Int>();
+
+        foreach (var node in main_nodes)
+        {
+            side_path_generation_order.Add(node);
+            side_path_generation_order.Add(node);
+        }
+
+        //Shuffle order of generation
+        for (int i = 0; i < side_path_generation_order.Count; ++i)
+        {
+            Vector2Int temp = side_path_generation_order[i];
+            var random_index = Random.Range(i, side_path_generation_order.Count);
+            side_path_generation_order[i] = side_path_generation_order[random_index];
+            side_path_generation_order[random_index] = temp;
+        }
+
+        int total_upgrade_room_created = 0;
+        foreach(Vector2Int node in side_path_generation_order)
+        {
+            var result = generate_side_path(node, Mathf.Min(width, length), create_upgrade_room: true);
+            total_upgrade_room_created = result ? total_upgrade_room_created + 1 : total_upgrade_room_created;
+            if(total_upgrade_room_created == total_upgrade_room)
+            {
+                break;
+            }
         }
     }
 
-    public void generate()
+    public void generate(int total_upgrade_room)
     {
         Vector2Int origin = new Vector2Int(Random.Range(0, width - 1), 0);
         Vector2Int end = new Vector2Int(Random.Range(0, width - 1), length-1);
@@ -277,6 +357,9 @@ public class Level : MonoBehaviour
         List<Vector2Int> main_nodes = generate_main_path(origin, end);
         int min_length = main_nodes.Count + 1;
         int max_length = Mathf.Min(width, length);
+
+        generate_upgrade_room(total_upgrade_room, main_nodes);
+
         foreach (Vector2Int node in main_nodes)
         {
             // generate side paths in the at most two remaining transitions
