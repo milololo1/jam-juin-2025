@@ -65,11 +65,12 @@ public class CharacterMovement : MonoBehaviour
 
         var diffVector = this.gameObject.transform.position - playerCamera.transform.position;
         diffVector = new Vector3(diffVector.x, 0, diffVector.z);
-        diffVector.Normalize();
+        diffVector = Vector3.ClampMagnitude(diffVector, 1);
+        //diffVector.Normalize();
 
-        var xzMagnitude = Mathf.Abs(diffVector.x) + Mathf.Abs(diffVector.z);
-        var xRatio = xzMagnitude < 0.05 ? 0 : diffVector.x / xzMagnitude;
-        var zRatio = xzMagnitude < 0.05 ? 0 : diffVector.z / xzMagnitude;
+        //var xzMagnitude = Mathf.Abs(diffVector.x) + Mathf.Abs(diffVector.z);
+        //var xRatio = xzMagnitude < 0.05 ? 0 : diffVector.x / xzMagnitude;
+        //var zRatio = xzMagnitude < 0.05 ? 0 : diffVector.z / xzMagnitude;
 
         playerCamera.transform.position = new Vector3(cameraPos.x + cameraSpeed * time * diffVector.x, 5, cameraPos.z + cameraSpeed * time * diffVector.z);
     }
