@@ -15,11 +15,26 @@ public class Flock : MonoBehaviour
     public float sqr_perception_radius = 25.0f;
     public float sqr_avoidance_radius = 4f;
     public float collision_avoidance_distance = 5.0f;
+    public float separation_strength = 1.0f;
+
+    public bool follow_target = false;
+    public float following_strength = 1.0f;
+    public float aiming_speed = 20.0f;
+    public float circling_speed = 1.0f;
+    public float circling_radius = 10f;
+    public float theta = 0;
+    private Vector3 target;
+    private Vector3 target_velocity;
+
+    public Transform target_transform;
+
 
     private List<Boid> boids;
 
     public void initialize()
     {
+        target = Vector3.zero;
+        target_velocity = Vector3.zero;
         boids = new List<Boid>();
         for (int i = 0; i < size; i++)
         {
@@ -34,6 +49,11 @@ public class Flock : MonoBehaviour
     {
         Vector3 center_boids = Vector3.zero, heading_boids = Vector3.zero, separation_heading = Vector3.zero;
         Vector3 acceleration = Vector3.zero;
+
+        if (follow_target)
+        {
+            acceleration += steer_force(target - boids[idx_boid].position, boids[idx_boid].velocity) * following_strength;
+        }
 
         int n_perceived_boids = 0;
         for (int i = 0; i < size; i++)
@@ -59,9 +79,9 @@ public class Flock : MonoBehaviour
         if (n_perceived_boids > 0)
         {
             center_boids /= n_perceived_boids;
-            acceleration += steer_force(center_boids, boids[idx_boid].velocity);                        // cohesion
-            acceleration += steer_force(heading_boids, boids[idx_boid].velocity);                       // alignment
-            acceleration += steer_force(separation_heading, boids[idx_boid].velocity);                  // separation
+            acceleration += steer_force(center_boids, boids[idx_boid].velocity);                            // cohesion
+            acceleration += steer_force(heading_boids, boids[idx_boid].velocity);                           // alignment
+            acceleration += steer_force(separation_heading, boids[idx_boid].velocity) * separation_strength;// separation
         }
 
         return acceleration;
@@ -80,10 +100,28 @@ public class Flock : MonoBehaviour
 
     void Update()
     {
-        /*foreach (Boid boid in boids)
+        if (follow_target)
         {
-            boid.update_position();
-        }*/
+            // update target
+            if (target_transform != null) // follow transform
+            {
+                Vector3 target_acceleration = Vector3.zero;
+                target_acceleration += steer_force(target_transform.position - target, target_velocity);
+                target_velocity += target_acceleration * Time.deltaTime;
+                target_velocity = Vector3.ClampMagnitude(target_velocity, aiming_speed);
+                target_velocity.z = 0;
+                target += target_velocity * Time.deltaTime;
+            }
+            else // circle around 
+            {
+                theta += (circling_speed / circling_radius) * Time.deltaTime;
+                target.x = Mathf.Cos(theta) * circling_radius;
+                target.y = Mathf.Sin(theta) * circling_radius;
+                target.z = 0;
+            }
+        }
+
+        // update boids
         for (int i = 0; i < size; i++)
         {
             boids[i].update_position(perceive_boids(i));
