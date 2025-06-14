@@ -68,7 +68,7 @@ public class Bullet : MonoBehaviour
 
     private Vector3 steer_force(Vector3 direction)
     {
-        Vector3 v = direction.normalized - velocity;
+        Vector3 v = direction.normalized - velocity.normalized;
         return Vector3.ClampMagnitude(v*speed, speed);
     }
 }
