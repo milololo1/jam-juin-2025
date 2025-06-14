@@ -48,7 +48,7 @@ public class FiringControl : MonoBehaviour
         aligned = new BulletSetting(0.3f, 6f, 4f, 0.8f, true);
         slow = new BulletSetting(0.1f, 5f, 5f, 0.05f);
 
-        set_mode(BulletMode.standard);
+        set_mode(BulletMode.aligned);
 
         timer = 0;
     }
