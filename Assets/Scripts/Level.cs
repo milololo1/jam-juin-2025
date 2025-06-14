@@ -11,6 +11,14 @@ public enum RoomType
     start
 }
 
+public enum Direction
+{
+    north,
+    south,
+    east,
+    west
+}
+
 public struct RoomConfiguration
 {
     public bool north, south, east, west;
@@ -68,6 +76,64 @@ public class Level : MonoBehaviour
         else if (diff_y > 0) // horizontal
         {
             horizontal_doors[x_1, Mathf.Min(y_1, y_2)] = true;
+        }
+    }
+
+    private void add_door(int x, int y, Direction dir)
+    {
+        x = dir == Direction.south ? x - 1 : x;
+        y = dir == Direction.west ? y - 1 : y;
+        if (x > -1 && x < width - 1 && y > -1 && y < length -1)
+        {
+            if (dir == Direction.north || dir == Direction.south) vertical_doors[x, y] = true;
+            else horizontal_doors[x, y] = true;
+        }
+    }
+
+    private void close_door(int x_1, int y_1, int x_2, int y_2)
+    {
+        int diff_x = Mathf.Abs(x_2 - x_1);
+        int diff_y = Mathf.Abs(y_2 - y_1);
+
+        if (diff_x > 1 || diff_y > 1) return;
+        if (diff_x > 0 && diff_y > 0) return;
+
+        if (diff_x > 0) // vertical
+        {
+            vertical_doors[Mathf.Min(x_1, x_2), y_1] = false;
+        }
+        else if (diff_y > 0) // horizontal
+        {
+            horizontal_doors[x_1, Mathf.Min(y_1, y_2)] = false;
+        }
+    }
+
+    private void close_door(int x, int y, Direction dir)
+    {
+        x = dir == Direction.south ? x - 1 : x;
+        y = dir == Direction.west ? y - 1 : y;
+        if (x > -1 && x < width - 1 && y > -1 && y < length - 1)
+        {
+            if (dir == Direction.north || dir == Direction.south) vertical_doors[x, y] = false;
+            else horizontal_doors[x, y] = false;
+        }
+    }
+
+    private void close_all_doors(int x, int y)
+    {
+        for (int dx = -1; dx < 2; dx += 2)
+        {
+            if (x + dx > -1 && x + dx < width)
+            {
+                close_door(x, y, x + dx, y);
+            }
+        }
+        for (int dy = -1; dy < 2; dy += 2)
+        {
+            if (y + dy > -1 && y + dy < length)
+            {
+                close_door(x, y, x, y + dy);
+            }
         }
     }
 
