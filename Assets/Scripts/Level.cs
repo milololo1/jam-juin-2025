@@ -83,10 +83,14 @@ public class Level : MonoBehaviour
     {
         x = dir == Direction.south ? x - 1 : x;
         y = dir == Direction.west ? y - 1 : y;
-        if (x > -1 && x < width - 1 && y > -1 && y < length -1)
+
+        if (dir == Direction.north || dir == Direction.south)
         {
-            if (dir == Direction.north || dir == Direction.south) vertical_doors[x, y] = true;
-            else horizontal_doors[x, y] = true;
+            if (x > -1 && x < width - 1) vertical_doors[x, y] = true;
+        }
+        else
+        {
+            if (y > -1 && y < length - 1) horizontal_doors[x, y] = true;
         }
     }
 
@@ -112,10 +116,14 @@ public class Level : MonoBehaviour
     {
         x = dir == Direction.south ? x - 1 : x;
         y = dir == Direction.west ? y - 1 : y;
-        if (x > -1 && x < width - 1 && y > -1 && y < length - 1)
+
+        if (dir == Direction.north || dir == Direction.south)
         {
-            if (dir == Direction.north || dir == Direction.south) vertical_doors[x, y] = false;
-            else horizontal_doors[x, y] = false;
+            if (x > -1 && x < width - 1) vertical_doors[x, y] = false;
+        }
+        else
+        {
+            if (y > -1 && y < length - 1) horizontal_doors[x, y] = false;
         }
     }
 
