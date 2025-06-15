@@ -1064,6 +1064,7 @@ MonoBehaviour:
   camera_controler: {fileID: 1449618889}
   player_stats: {fileID: 1776299561}
   character_movement: {fileID: 1776299560}
+  upgrade_item: {fileID: 7839403859360626313, guid: 84675d1648e4dff478fb2b9e850d4286, type: 3}
 --- !u!4 &870784759 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7030054527689704768, guid: 22f208926b6c8ee41bdabb35db074035, type: 3}
@@ -1770,7 +1771,7 @@ GameObject:
   - component: {fileID: 1776299564}
   m_Layer: 9
   m_Name: player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

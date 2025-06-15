@@ -21,6 +21,9 @@ public class UIRoom : MonoBehaviour
             case RoomType.upgrade:
                 background.color = Color.blue;
                 break;
+            case RoomType.fight:
+                background.color = Color.gray;
+                break;
             case RoomType.boss:
                 background.color = Color.red;
                 break;

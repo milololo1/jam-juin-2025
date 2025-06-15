@@ -7,6 +7,7 @@ public enum RoomType
     none,
     simple,
     upgrade,
+    fight,
     boss,
     start
 }
@@ -368,7 +369,45 @@ public class Level : MonoBehaviour
         }
     }
 
-    public Vector2Int generate(int total_upgrade_room)
+    private void generate_fight_room(int total_fight_room)
+    {
+        List<(int x, int y)> fight_room_generation_order = new List<(int x, int y)>();
+        for (int i = 0; i < rooms.GetLength(0); ++i)
+        {
+            for(int j = 0; j < rooms.GetLength(1); ++j)
+            {
+                fight_room_generation_order.Add((i, j));
+            }
+        }
+
+        //Shuffle order of generation
+        for (int i = 0; i < fight_room_generation_order.Count; ++i)
+        {
+            var temp = fight_room_generation_order[i];
+            var random_index = Random.Range(i, fight_room_generation_order.Count);
+            fight_room_generation_order[i] = fight_room_generation_order[random_index];
+            fight_room_generation_order[random_index] = temp;
+        }
+
+        int total_fight_room_created = 0;
+        foreach(var node in fight_room_generation_order)
+        {
+            var type = rooms[node.x, node.y];
+            if (type == RoomType.simple)
+            {
+                rooms[node.x, node.y] = RoomType.fight;
+                total_fight_room_created++;
+
+                if(total_fight_room_created == total_fight_room)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+
+    public Vector2Int generate(int total_upgrade_room, int total_fight_room)
     {
         Vector2Int origin = new Vector2Int(Random.Range(0, width - 1), 0);
         Vector2Int end = new Vector2Int(Random.Range(0, width - 1), length-1);
@@ -386,6 +425,8 @@ public class Level : MonoBehaviour
             generate_side_path(node, Random.Range(min_length, Mathf.Min(min_length, max_length)));
             min_length -= 1;
         }
+
+        generate_fight_room(total_fight_room);
 
         return origin;
     }

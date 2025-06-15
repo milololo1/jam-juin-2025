@@ -47,6 +47,7 @@ public class RoomStructure : MonoBehaviour
                 gameObject.SetActive(false);
                 return;
             default:
+            case RoomType.fight:
             case RoomType.simple:
                 generate(Random.Range(0, 4 + 1), Random.Range(0, 1 + 1));
                 break;

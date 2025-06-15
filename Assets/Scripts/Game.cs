@@ -13,6 +13,7 @@ public class Game : MonoBehaviour
     public CameraControler camera_controler;
     public PlayerStats player_stats;
     public CharacterMovement character_movement;
+    public GameObject upgrade_item;
 
     private void enter_room(Vector2Int v, bool skip_transition=false) { enter_room(v.x, v.y, skip_transition); }
 
@@ -52,10 +53,13 @@ public class Game : MonoBehaviour
                 default:
                 case RoomType.start:
                 case RoomType.none:
-                case RoomType.upgrade:
+                case RoomType.simple:
                     complete();
                     break;
-                case RoomType.simple:
+                case RoomType.upgrade:
+                    create_upgrade_item();
+                    break;
+                case RoomType.fight:
                     start_combat();
                     break;
                 case RoomType.boss:
@@ -65,13 +69,27 @@ public class Game : MonoBehaviour
         }
     }
 
+    private void create_upgrade_item()
+    {
+        current_room.close_doors();
+        var item = Instantiate(upgrade_item);
+        item.transform.position = new Vector3(current_room_coord.y * RoomStructure.full_room_length, current_room_coord.x * RoomStructure.full_room_width - 4, 0);
+        item.GetComponent<UpgradeItem>().game = this;
+    }
+
+    private void spawn_enemies()
+    {
+
+    }
+
     private void start_combat(bool boss = false)
     {
         current_room.close_doors();
+        spawn_enemies();
         // spawn enemies/boss
     }
 
-    private void complete()
+    public void complete()
     {
         int x = current_room_coord.x;
         int y = current_room_coord.y;
@@ -85,7 +103,7 @@ public class Game : MonoBehaviour
         ui_system.initialize(); //for now
 
         level.initialize();
-        Vector2Int start = level.generate(3);
+        Vector2Int start = level.generate(3, 10);
         level.construct_3D_map();
         UISystem.ui_map.display();
 

@@ -23,11 +23,7 @@ public class PlayerStats : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("upgrade")) //Le tag n'existe pas encore je crois
         {
-            Debug.Log("Touch upgrade");
-
             upgradeSource.Play();
-            //Appeller ici une fonction qui modifie player stat en fonction d'un certain type d'upgrade
-            //ex.: abstract class upgrade qui est héritée par upgradeHp, ..., la classe abstract est contenue dans un monobehaviour sur l'object upgrade
         }
 
         if ((collision.gameObject.CompareTag("boid") || collision.gameObject.CompareTag("enemy")) && !is_invincible)
