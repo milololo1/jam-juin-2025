@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] Transform target; //Target to follow
-    [SerializeField] Vector3 offset = new Vector3(0, 2, 0); //Position up the enemy
+    [SerializeField] Vector3 offset; //Position up the enemy
     [SerializeField] Image fillImage;
 
     private void Start()
     {
+        offset = new Vector3(0, 2, 0);
         transform.forward = Camera.main.transform.forward;
     }
 

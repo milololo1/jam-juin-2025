@@ -40,7 +40,7 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("enemy"))
         {
-            collision.gameObject.GetComponent<Enemy>().TakeDamage(PlayerStats.attack_power);
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(10 * PlayerStats.attack_power);
             retire();
         }
 

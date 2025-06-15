@@ -7,6 +7,7 @@ public class Game : MonoBehaviour
     private Vector2Int current_room_coord;
     private RoomConfiguration current_config;
     private RoomStructure current_room;
+    private List<Enemy> enemy_room_list;
 
     public Level level;
     public UISystem ui_system;
@@ -14,6 +15,8 @@ public class Game : MonoBehaviour
     public PlayerStats player_stats;
     public CharacterMovement character_movement;
     public GameObject upgrade_item;
+
+    public GameObject globule_rouge_enemy;
 
     private void enter_room(Vector2Int v, bool skip_transition=false) { enter_room(v.x, v.y, skip_transition); }
 
@@ -79,14 +82,27 @@ public class Game : MonoBehaviour
 
     private void spawn_enemies()
     {
+        var enemy = Instantiate(globule_rouge_enemy);
+        enemy.transform.position = new Vector3(current_room_coord.y * RoomStructure.full_room_length, current_room_coord.x * RoomStructure.full_room_width - 4, 0);
+        enemy_room_list.Add(enemy.GetComponent<Enemy>());
+    }
+
+    private void spawn_boss()
+    {
 
     }
 
     private void start_combat(bool boss = false)
     {
         current_room.close_doors();
-        spawn_enemies();
-        // spawn enemies/boss
+        if(boss)
+        {
+            spawn_boss();
+        }
+        else
+        {
+            spawn_enemies();
+        }
     }
 
     public void complete()
@@ -110,6 +126,8 @@ public class Game : MonoBehaviour
         character_movement.transform.position = new Vector3(start.y * RoomStructure.full_room_length, start.x * RoomStructure.full_room_width, 0);
         CharacterMovement.room_location = start; // for safety
         enter_room(start.x, start.y, true);
+
+        enemy_room_list = new List<Enemy>();
     }
 
     void Update()
@@ -119,9 +137,27 @@ public class Game : MonoBehaviour
         {
             // check criterion
             // complete(current_room_coord.x, current_room_coord.y)
+            if(current_config.type == RoomType.fight)
+            {
+                bool all_enemy_dead = true;
+                foreach(var enemy in enemy_room_list)
+                {
+                    all_enemy_dead &= enemy.is_dead;
+                }
+
+                if(all_enemy_dead)
+                {
+                    foreach(var enemy in enemy_room_list)
+                    {
+                        enemy.destroy_enemy();
+                    }
+                    enemy_room_list.Clear();
+                    complete();
+                }
+            }
 
             //DEBUG
-            if (Input.GetKeyDown(KeyCode.Space)) complete();
+            //if (Input.GetKeyDown(KeyCode.Space)) complete();
         }
         else
         {
