@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2595145860478523840}
   m_Layer: 7
   m_Name: BL
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 9143798615328057411}
   m_Layer: 7
   m_Name: RT
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 6795093327351435909}
   m_Layer: 7
   m_Name: BR
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 3302456333396433121}
   m_Layer: 7
   m_Name: TL
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 8681290047899725312}
   m_Layer: 7
   m_Name: RB
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 6865984361269816022}
   m_Layer: 7
   m_Name: LT
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -417,7 +417,7 @@ GameObject:
   - component: {fileID: 5219601166099102372}
   m_Layer: 7
   m_Name: TR
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -544,7 +544,7 @@ GameObject:
   - component: {fileID: 8623435598907638984}
   m_Layer: 7
   m_Name: LB
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -645,6 +645,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: L Door
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6fab3516e3235874b8f62779291bd3a9, type: 3}
+      propertyPath: m_TagString
+      value: wall
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -743,6 +747,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6fab3516e3235874b8f62779291bd3a9, type: 3}
       propertyPath: m_Name
       value: T Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6fab3516e3235874b8f62779291bd3a9, type: 3}
+      propertyPath: m_TagString
+      value: wall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -843,6 +851,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: B Door
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6fab3516e3235874b8f62779291bd3a9, type: 3}
+      propertyPath: m_TagString
+      value: wall
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -941,6 +953,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6fab3516e3235874b8f62779291bd3a9, type: 3}
       propertyPath: m_Name
       value: R Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6fab3516e3235874b8f62779291bd3a9, type: 3}
+      propertyPath: m_TagString
+      value: wall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

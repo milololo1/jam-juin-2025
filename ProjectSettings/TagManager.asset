@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Canvas
+  - enemy
+  - boid
+  - upgrade
+  - wall
   layers:
   - Default
   - TransparentFX
