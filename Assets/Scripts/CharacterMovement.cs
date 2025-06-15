@@ -62,6 +62,7 @@ public class CharacterMovement : MonoBehaviour
             transform.position += direction * playerSpeed * time;
 
             room_location = get_room_location();
+            PlayerStats.player_pos = this.gameObject.transform.position;
         }
         else
         {

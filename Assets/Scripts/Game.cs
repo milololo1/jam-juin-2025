@@ -17,6 +17,7 @@ public class Game : MonoBehaviour
     public GameObject upgrade_item;
 
     public GameObject globule_rouge_enemy;
+    public GameObject anti_corps_enemy;
 
     private void enter_room(Vector2Int v, bool skip_transition=false) { enter_room(v.x, v.y, skip_transition); }
 
@@ -82,8 +83,19 @@ public class Game : MonoBehaviour
 
     private void spawn_enemies()
     {
-        var enemy = Instantiate(globule_rouge_enemy);
-        enemy.transform.position = new Vector3(current_room_coord.y * RoomStructure.full_room_length, current_room_coord.x * RoomStructure.full_room_width - 4, 0);
+        int random_value = Random.Range(0, 2);
+        GameObject enemy;
+        if(random_value == 0)
+        {
+            enemy = Instantiate(globule_rouge_enemy);
+            enemy.GetComponent<Enemy>().strategy = EnemyStrategy.nothing;
+        }
+        else
+        {
+            enemy = Instantiate(anti_corps_enemy);
+            enemy.GetComponent<Enemy>().strategy = EnemyStrategy.move_to_player;
+        }
+        enemy.transform.position = new Vector3(current_room_coord.y * RoomStructure.full_room_length, current_room_coord.x * RoomStructure.full_room_width, 0);
         enemy_room_list.Add(enemy.GetComponent<Enemy>());
     }
 

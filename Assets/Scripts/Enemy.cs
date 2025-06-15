@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EnemyStrategy
+{
+    nothing,
+    attack_player,
+    move_to_player,
+    move_to_player_and_attack
+}
+
 public class Enemy : MonoBehaviour
 {
     [SerializeField] float maxHealth = 100f;
@@ -11,6 +19,8 @@ public class Enemy : MonoBehaviour
     private HealthBar healthBar;
 
     public bool is_dead;
+    public EnemyStrategy strategy;
+    public float enemy_speed = 2f;
 
     private void Start()
     {
@@ -27,7 +37,7 @@ public class Enemy : MonoBehaviour
     {
         currentHealth -= amout;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        Debug.Log(currentHealth);
+        //Debug.Log(currentHealth);
         healthBar.SetHealth(currentHealth, maxHealth);
 
         if(currentHealth == 0f)
@@ -42,5 +52,24 @@ public class Enemy : MonoBehaviour
     {
         Destroy(this.healthBar.gameObject);
         Destroy(this.gameObject);
+    }
+
+    private void Update()
+    {
+        switch (strategy)
+        {
+            case EnemyStrategy.nothing:
+                //Nothing
+                break;
+            case EnemyStrategy.attack_player:
+                break;
+            case EnemyStrategy.move_to_player:
+                var direction = PlayerStats.player_pos - this.gameObject.transform.position;
+                direction.Normalize();
+                this.gameObject.transform.position += direction * enemy_speed * Time.deltaTime;
+                break;
+            case EnemyStrategy.move_to_player_and_attack:
+                break;
+        }
     }
 }

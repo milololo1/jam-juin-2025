@@ -12,9 +12,12 @@ public class PlayerStats : MonoBehaviour
     public static float attack_speed = 1f;
     public static float movement_speed = 1f;
 
+    public static Vector3 player_pos;
+
     public static float max_invincibility_time = 1f;
     private float invincibility_timer;
     private bool is_invincible;
+    private float invincibility_flash_time;
 
     [SerializeField] AudioSource damageSource;
     [SerializeField] AudioSource upgradeSource;
@@ -57,6 +60,7 @@ public class PlayerStats : MonoBehaviour
     void Start()
     {
         invincibility_timer = 0f;
+        invincibility_flash_time = 0f;
         is_invincible = false;
     }
 
@@ -66,10 +70,18 @@ public class PlayerStats : MonoBehaviour
         if (is_invincible)
         {
             invincibility_timer += Time.deltaTime;
+            invincibility_flash_time += Time.deltaTime;
+            if(invincibility_flash_time > 0.2)
+            {
+                this.gameObject.GetComponent<MeshRenderer>().enabled = !this.gameObject.GetComponent<MeshRenderer>().enabled;
+                invincibility_flash_time = 0;
+            }
             if(invincibility_timer > max_invincibility_time)
             {
                 is_invincible = false;
                 invincibility_timer = 0f;
+                invincibility_flash_time -= 0;
+                this.gameObject.GetComponent<MeshRenderer>().enabled = true;
             }
         }
     }
