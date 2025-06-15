@@ -16,11 +16,16 @@ public class PlayerStats : MonoBehaviour
     private float invincibility_timer;
     private bool is_invincible;
 
+    [SerializeField] AudioSource damageSource;
+    [SerializeField] AudioSource upgradeSource;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("upgrade")) //Le tag n'existe pas encore je crois
         {
             Debug.Log("Touch upgrade");
+
+            upgradeSource.Play();
             //Appeller ici une fonction qui modifie player stat en fonction d'un certain type d'upgrade
             //ex.: abstract class upgrade qui est héritée par upgradeHp, ..., la classe abstract est contenue dans un monobehaviour sur l'object upgrade
         }
@@ -29,12 +34,15 @@ public class PlayerStats : MonoBehaviour
         {
             take_damage(10);
             is_invincible = true;
+
+            damageSource.Play();
             //Animation à mettre en place pendant l'invincibilité (du style un clignotement ou un truc du genre)
         }
     }
 
     public static void take_damage(float damage)
     {
+
         //A link avec la healtbar du joueur (je sais pas où c'est afficher et si ça existe déjà)
         current_hp -= damage;
 

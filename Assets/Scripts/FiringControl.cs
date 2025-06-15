@@ -44,6 +44,8 @@ public class FiringControl : MonoBehaviour
 
     public static BulletSetting standard, high_density, aligned, slow;
 
+    [SerializeField] AudioSource shootingAudioSource;
+
     void Start()
     {
         standard = new BulletSetting(1f, 0.2f, 8f, 3f, 0.1f);
@@ -66,6 +68,7 @@ public class FiringControl : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.Space))
         {
+            shootingAudioSource.Play();
             Vector3 forward = get_forward();
 
             float theta_noise = (2 * Random.value - 1) * current_setting.noise;
