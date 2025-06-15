@@ -6,6 +6,8 @@ public class CharacterMovement : MonoBehaviour
 {
     public GameObject playerCamera;
 
+    private PlayerStats stats;
+
     private const float playerAccel = 1.3f;
     private const float CameraAccel = 1f;
     private const float maxSpeed = 5f;
@@ -17,6 +19,8 @@ public class CharacterMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.stats = this.gameObject.GetComponent<PlayerStats>();
+
         playerSpeed = baseSpeed;
         cameraSpeed = baseSpeed;
     }

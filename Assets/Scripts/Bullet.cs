@@ -17,7 +17,7 @@ public class Bullet : MonoBehaviour
         transform.position = position;
         transform.forward = velocity.normalized;
         this.velocity = velocity;
-        this.speed = speed;
+        this.speed = speed * PlayerStats.attack_speed;
         this.life = life;
         this.pool = pool;
         use_alignement = false;
@@ -28,12 +28,26 @@ public class Bullet : MonoBehaviour
         transform.position = position;
         transform.forward = velocity.normalized;
         this.velocity = velocity;
-        this.speed = speed;
+        this.speed = speed * PlayerStats.attack_speed;
         this.life = life;
         this.pool = pool;
         use_alignement = true;
         this.alignement = alignement;
         gameObject.SetActive(true);
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("enemy"))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(PlayerStats.attack_power);
+            retire();
+        }
+
+        if (collision.gameObject.CompareTag("wall"))
+        {
+            retire();
+        }
     }
 
     public void retire()

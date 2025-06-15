@@ -12,8 +12,9 @@ public enum BulletMode
 
 public struct BulletSetting
 {
-    public BulletSetting(float firing_delay, float speed, float life, float noise, bool use_alignement=false)
+    public BulletSetting(float damage, float firing_delay, float speed, float life, float noise, bool use_alignement=false)
     {
+        this.damage = damage;
         this.firing_delay = firing_delay;
         this.speed = speed;
         this.life = life;
@@ -21,7 +22,7 @@ public struct BulletSetting
         this.use_alignement = use_alignement;
     }
 
-
+    public float damage;
     public float firing_delay;
     public float speed;
     public float life;
@@ -39,18 +40,22 @@ public class FiringControl : MonoBehaviour
     private BulletMode current_mode;
     private BulletSetting current_setting;
 
+    private PlayerStats stats;
+
     public static BulletSetting standard, high_density, aligned, slow;
 
     void Start()
     {
-        standard = new BulletSetting(0.2f, 8f, 3f, 0.1f);
-        high_density = new BulletSetting(0.05f, 10f, 2f, 0.5f);
-        aligned = new BulletSetting(0.3f, 6f, 4f, 0.8f, true);
-        slow = new BulletSetting(0.1f, 5f, 5f, 0.05f);
+        standard = new BulletSetting(1f, 0.2f, 8f, 3f, 0.1f);
+        high_density = new BulletSetting(1f, 0.05f, 10f, 2f, 0.5f);
+        aligned = new BulletSetting(1f, 0.3f, 6f, 4f, 0.8f, true);
+        slow = new BulletSetting(1f, 0.1f, 5f, 5f, 0.05f);
 
         set_mode(BulletMode.aligned);
 
         timer = 0;
+
+        this.stats = this.gameObject.GetComponent<PlayerStats>();
     }
 
     void Update()
