@@ -23,21 +23,28 @@ public struct RoomConfiguration
 {
     public bool north, south, east, west;
     public RoomType type;
+    public bool completed;
 }
 
 public class Level : MonoBehaviour
 {
     public int width, length;
 
-    public RoomType[,] rooms;
-    public bool[,] vertical_doors;
-    public bool[,] horizontal_doors;
+    private RoomType[,] rooms;
+    private bool[,] vertical_doors;
+    private bool[,] horizontal_doors;
+    private bool[,] completed;
+    private RoomStructure[,] room_structs;
+
+    public GameObject room_prefab;
 
     public void initialize()
     {
         rooms = new RoomType[width, length];
         vertical_doors = new bool[width - 1, length];
         horizontal_doors = new bool[width, length - 1];
+        completed = new bool[width, length];
+        room_structs = new RoomStructure[width, length];
     }
 
     public RoomConfiguration get_configuration(int x, int y)
@@ -58,7 +65,19 @@ public class Level : MonoBehaviour
         if (y - 1 < 0) config.west = false;
         else config.west = horizontal_doors[x, y-1];
 
+        config.completed = completed[x, y];
+
         return config;
+    }
+
+    public RoomStructure get_room(int x, int y)
+    {
+        return room_structs[x, y];
+    }
+
+    public void complete(int x, int y)
+    {
+        completed[x, y] = true;
     }
 
     private void add_door(int x_1, int y_1, int x_2, int y_2)
@@ -349,7 +368,7 @@ public class Level : MonoBehaviour
         }
     }
 
-    public void generate(int total_upgrade_room)
+    public Vector2Int generate(int total_upgrade_room)
     {
         Vector2Int origin = new Vector2Int(Random.Range(0, width - 1), 0);
         Vector2Int end = new Vector2Int(Random.Range(0, width - 1), length-1);
@@ -366,6 +385,22 @@ public class Level : MonoBehaviour
             generate_side_path(node, Random.Range(min_length, Mathf.Min(min_length, max_length)));
             generate_side_path(node, Random.Range(min_length, Mathf.Min(min_length, max_length)));
             min_length -= 1;
+        }
+
+        return origin;
+    }
+
+    public void construct_3D_map()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < length; y++)
+            {
+                RoomStructure room = Instantiate(room_prefab, transform).GetComponent<RoomStructure>();
+                room_structs[x, y] = room;
+                room.transform.position = new Vector3(y * RoomStructure.full_room_length, x * RoomStructure.full_room_width, 0);
+                room.load_config(get_configuration(x, y));
+            }
         }
     }
 }

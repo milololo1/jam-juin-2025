@@ -11,12 +11,8 @@ public class UIMap : MonoBehaviour
     private UIRoom[,] rooms;
     private int size_room = 50;
 
-    private void initialize()
+    public void initialize()
     {
-        // for now
-        level.initialize();
-        level.generate(3);
-
         GetComponent<RectTransform>().sizeDelta = new Vector2(level.length*size_room, level.width*size_room);
 
         rooms = new UIRoom[level.width, level.length];
@@ -46,13 +42,5 @@ public class UIMap : MonoBehaviour
     public void hide()
     {
         foreach (UIRoom room in rooms) room.hide();
-    }
-
-    void Start()
-    {
-        initialize();
-        display();
-
-        Debug.Log(level.get_configuration(0, 0).north);
     }
 }
